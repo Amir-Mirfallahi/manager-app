@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Vazirmatn } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/theme-provider";
+import { DisableZoom } from "@/components/disable-zoom";
 
 const vazirmatnSans = Vazirmatn({
   variable: "--font-vazirmatn-sans",
@@ -9,7 +11,7 @@ const vazirmatnSans = Vazirmatn({
 
 
 export const metadata: Metadata = {
-  title: "منیجر | manager",
+  title: "Taskflow AI | تسک فلو",
   description: "کارات رو بسپر دست ما!",
 };
 
@@ -36,7 +38,16 @@ export default function RootLayout({
         />
 
         </head>
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <DisableZoom />
+          {children}
+        </ThemeProvider>
+
       </body>
     </html>
   );

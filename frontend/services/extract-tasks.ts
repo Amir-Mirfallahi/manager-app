@@ -1,0 +1,38 @@
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatPromptTemplate } from "@langchain/core/prompts";
+import { TaskListSchema } from "@/schema/ai-response";
+
+export async function extractAndScheduleTasks(userInput: string) {
+  const model = new ChatOpenAI(
+  {
+    model: "nvidia/nemotron-3-nano-30b-a3b:free", 
+    apiKey: process.env.OPENROUTER_API_KEY,
+    temperature: 0.6,
+    configuration: {
+      baseURL: "https://openrouter.ai/api/v1",
+      defaultHeaders: {
+      "HTTP-Referer": "https://taskflow-ai.ir/",
+      "X-Title": "TaskFlow AI",
+    },
+    }
+  },
+);
+
+  const prompt = ChatPromptTemplate.fromMessages([
+    ["system", `You are a scheduling assistant. 
+      Your goal is to extract tasks from the user's input and:
+      1. Assign a priority (High/Medium/Low) based on the user's tone and context.
+      2. Assign a logical 'start_hour' and 'end_hour' for each task.
+      3. If the user doesn't specify a start time, assume the day starts at 09:00 and sequence the tasks chronologically.
+      4. Ensure tasks do not overlap.
+      5. Return the tasks sorted by their start time.
+      6. All of your response must be in Persian.`],
+    ["human", "{input}"],
+  ]);
+
+  const structuredLlm = model.withStructuredOutput(TaskListSchema);
+  const chain = prompt.pipe(structuredLlm);
+
+  const response = await chain.invoke({ input: userInput });
+  return response.tasks;
+}
