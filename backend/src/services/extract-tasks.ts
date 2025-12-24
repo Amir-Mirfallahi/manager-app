@@ -1,7 +1,8 @@
 "use server";
 import { ChatOpenAI } from "@langchain/openai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { TaskListSchema } from "@/schema/ai-response";
+import { TaskListSchema } from "../schema/ai-response";
+import "dotenv/config";
 
 export async function extractAndScheduleTasks(
   userInput: string,

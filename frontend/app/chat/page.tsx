@@ -6,17 +6,17 @@ import { ChatPage } from "@/components/chat/chat-page";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { extractAndScheduleTasks } from "@/services/extract-tasks";
+import { extractAndScheduleTasks } from "@/lib/extract";
 
 export default function ChatPageRoute() {
   const [loading, setLoading] = useState(false);
   const setTasks = useTaskStore((state) => state.setTasks);
   const router = useRouter();
 
-  const handleGenerate = async (input: string) => {
+  const handleGenerate = async (input: string, temp: number) => {
     setLoading(true);
     try {
-      const extractedTasks = await extractAndScheduleTasks(input);
+      const extractedTasks = await extractAndScheduleTasks(input, temp);
       setTasks(extractedTasks);
       toast.success("با موفقیت ساخته شد");
       router.push("/");
