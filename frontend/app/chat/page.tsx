@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ChatPage } from "@/components/chat/chat-page";
 import { useTaskStore } from "@/store/useTaskStore";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner"; // Assuming you have Shadcn sonner installed
+import { toast } from "sonner";
 import { extractAndScheduleTasks } from "@/services/extract-tasks";
 
 export default function ChatPageRoute() {
@@ -19,8 +19,10 @@ export default function ChatPageRoute() {
       const extractedTasks = await extractAndScheduleTasks(input);
       setTasks(extractedTasks);
       toast.success("با موفقیت ساخته شد");
-      router.push("/"); // Redirect to see the tasks
+      router.push("/");
     } catch (error) {
+      console.error(error);
+
       toast.error("مشکلی در ساخت پیش آمد.");
     } finally {
       setLoading(false);

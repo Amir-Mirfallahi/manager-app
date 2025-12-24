@@ -1,49 +1,48 @@
-// components/chat/chat-page.tsx
 "use client";
 
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bot, User, Plus, ArrowUpIcon } from "lucide-react";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupText,
-  InputGroupTextarea,
-} from "../ui/input-group";
+import { Bot, User, Plus, ArrowUpIcon, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  Separator,
-} from "@radix-ui/react-dropdown-menu";
+} from "@/components/ui/dropdown-menu"; // Use the Shadcn version!
+import { Separator } from "@/components/ui/separator";
+
+// Map Persian labels to temperature values
+const TEMP_MAP = {
+  اتوماتیک: 0.5,
+  دقیق: 0,
+  خلاق: 0.9,
+};
 
 export function ChatPage({
   onGenerateTasks,
 }: {
-  onGenerateTasks: (input: string) => void;
+  onGenerateTasks: (input: string, temp: number) => void;
 }) {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<
-    { role: "ai" | "user"; text: string }[]
-  >([
-    {
-      role: "ai",
-      text: "What's on your schedule for today? I'll organize it for you.",
-    },
+  const [tempLabel, setTempLabel] = useState<keyof typeof TEMP_MAP>("اتوماتیک");
+  const [messages, setMessages] = useState([
+    { role: "ai", text: "برنامه امروزت چیه؟" },
   ]);
 
   const handleSend = () => {
     if (!input.trim()) return;
     setMessages((prev) => [...prev, { role: "user", text: input }]);
-    onGenerateTasks(input); // Trigger your LangChain logic
+
+    // Pass both input and the mapped temperature value
+    onGenerateTasks(input, TEMP_MAP[tempLabel]);
     setInput("");
   };
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] max-w-md mx-auto">
-      <ScrollArea className="flex-1 p-4 space-y-4">
+      <ScrollArea className="flex-1 p-4">
         {messages.map((m, i) => (
           <div
             key={i}
@@ -73,50 +72,70 @@ export function ChatPage({
         ))}
       </ScrollArea>
 
-      <div className="p-4 border-t bg-background flex gap-2">
-        <InputGroup>
-          <InputGroupTextarea
+      <div className="p-4 border-t bg-background">
+        <div className="relative border rounded-xl bg-muted/50 focus-within:ring-1 focus-within:ring-ring">
+          <Textarea
             placeholder="درمورد امروز خود بنویسید..."
+            className="min-h-[100px] w-full resize-none border-0 bg-transparent p-3 shadow-none focus-visible:ring-0"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onKeyDown={(e) =>
+              e.key === "Enter" &&
+              !e.shiftKey &&
+              (e.preventDefault(), handleSend())
+            }
           />
-          <InputGroupAddon align="block-end">
-            <InputGroupButton
-              variant="outline"
-              className="rounded-full"
-              size="icon-xs"
-            >
-              <Plus />
-            </InputGroupButton>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <InputGroupButton variant="ghost">اتوماتیک</InputGroupButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                align="start"
-                className="[--radius:0.95rem]"
+
+          <div className="flex items-center justify-between p-2">
+            <div className="flex items-center gap-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full h-8 w-8"
               >
-                <DropdownMenuItem>اتوماتیک</DropdownMenuItem>
-                <DropdownMenuItem>دقیق</DropdownMenuItem>
-                <DropdownMenuItem>خلاق</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <Separator aria-orientation="vertical" className="h-4!" />
-            <InputGroupButton
-              variant="default"
-              className="rounded-full"
-              size="icon-xs"
-              disabled
+                <Plus className="h-4 w-4" />
+              </Button>
+
+              <Separator orientation="vertical" className="h-4 mx-1" />
+
+              {/* Fixed Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 gap-1 text-xs"
+                  >
+                    {tempLabel}
+                    <ChevronDown className="h-3 w-3 opacity-50" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-[120px]">
+                  {Object.keys(TEMP_MAP).map((label) => (
+                    <DropdownMenuItem
+                      key={label}
+                      onClick={() =>
+                        setTempLabel(label as keyof typeof TEMP_MAP)
+                      }
+                      className="text-right justify-end"
+                    >
+                      {label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            <Button
+              size="icon"
+              className="rounded-full h-8 w-8"
+              onClick={handleSend}
+              disabled={!input.trim()}
             >
-              <ArrowUpIcon />
-              <span className="sr-only cursor-pointer" onClick={handleSend}>
-                ارسال
-              </span>
-            </InputGroupButton>
-          </InputGroupAddon>
-        </InputGroup>
+              <ArrowUpIcon className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
