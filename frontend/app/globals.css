@@ -191,3 +191,67 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+body {
+  padding-top: var(--sat);
+  padding-right: var(--sar);
+  padding-bottom: var(--sab);
+  padding-left: var(--sal);
+  overscroll-behavior-y: contain;
+}
+
+* {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+input,
+textarea {
+  user-select: text;
+}
+
+.page-transition {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Smooth scrolling for Android */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+/* Allow text selection only for inputs */
+input,
+textarea,
+[contenteditable] {
+  -webkit-touch-callout: default;
+  user-select: text;
+}
+
+.full-width-rtl {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  left: 0;
+  right: 0;
+  position: relative;
+}
