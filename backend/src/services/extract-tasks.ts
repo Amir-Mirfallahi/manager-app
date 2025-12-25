@@ -13,7 +13,7 @@ export async function extractAndScheduleTasks(
       model: "deepseek/deepseek-r1-0528:free",
       apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
       configuration: {
-        baseURL: "https://openrouter.ai/api/v1",
+        baseURL: "https://api.avalai.ir/v1",
         defaultHeaders: {
           "HTTP-Referer": "https://taskflow-ai.ir/",
           "X-Title": "TaskFlow AI",
