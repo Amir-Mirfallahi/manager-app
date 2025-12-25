@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
-import { Vazirmatn } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { DisableZoom } from "@/components/disable-zoom";
-import { LayoutDashboard, MessageSquare } from "lucide-react";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { Toaster } from "@/components/ui/sonner";
-
-const vazirmatnSans = Vazirmatn({
-  variable: "--font-vazirmatn-sans",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Taskflow AI | تسک فلو",
@@ -18,11 +11,6 @@ export const metadata: Metadata = {
   creator: "Amir Mirfallahi",
   keywords: ["task", "ai", "schedule"],
 };
-const NAV_ITEMS = [
-  { label: "تسکی", href: "/chat", icon: MessageSquare },
-  { label: "تسک ها", href: "/", icon: LayoutDashboard },
-];
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fa" dir="rtl">
-      <body className={`${vazirmatnSans.variable} antialiased`}>
+      <body className="antialiased font-vazirmatn pb-12">
         <head>
           <meta
             name="viewport"
@@ -51,7 +39,7 @@ export default function RootLayout({
         >
           <DisableZoom />
           {children}
-          <BottomNav items={NAV_ITEMS} currentPath="/chat" />
+          <BottomNav />
           <Toaster />
         </ThemeProvider>
       </body>

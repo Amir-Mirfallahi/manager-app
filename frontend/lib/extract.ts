@@ -5,11 +5,14 @@ export const extractAndScheduleTasks = async (
   temperature: number
 ) => {
   try {
-    const response = await fetch("http://localhost:4000/extract", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ input, temperature }),
-    });
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}extract`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ input, temperature }),
+      }
+    );
 
     // Check response
     if (!response.ok) {
