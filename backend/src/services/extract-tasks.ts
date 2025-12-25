@@ -10,7 +10,7 @@ export async function extractAndScheduleTasks(
 ) {
   try {
     const model = new ChatOpenAI({
-      model: "nvidia/nemotron-3-nano-30b-a3b:free",
+      model: "openai/gpt-oss-120b:free",
       apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
       configuration: {
         baseURL: "https://openrouter.ai/api/v1",

@@ -74,6 +74,8 @@
 }
 
 :root {
+  --safe-area-top: env(safe-area-inset-top, 20px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 20px);
   --radius: 0.8rem;
   --background: oklch(0.9816 0.0085 67.7261);
   --foreground: oklch(0.3550 0.0321 49.0365);

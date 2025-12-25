@@ -17,7 +17,8 @@ export default function ChatPageRoute() {
     setLoading(true);
     try {
       const extractedTasks = await extractAndScheduleTasks(input, temp);
-      setTasks(extractedTasks);
+      const currentTasks = useTaskStore.getState().tasks;
+      setTasks([...currentTasks, ...extractedTasks]);
       toast.success("با موفقیت ساخته شد");
       router.push("/");
     } catch (error) {

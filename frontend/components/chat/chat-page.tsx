@@ -76,7 +76,7 @@ export function ChatPage({
         <div className="relative border rounded-xl bg-muted/50 focus-within:ring-1 focus-within:ring-ring">
           <Textarea
             placeholder="درمورد امروز خود بنویسید..."
-            className="min-h-[100px] w-full resize-none border-0 bg-transparent p-3 shadow-none focus-visible:ring-0"
+            className="min-h-[60px] w-full resize-none border-0 bg-transparent p-3 shadow-none focus-visible:ring-0"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) =>

@@ -15,12 +15,12 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 border-t bg-background pb-safe-area-inset-bottom z-50">
+    <nav className="fixed bottom-0 left-0 right-0 border-t bg-background pb-safe-area-inset-bottom z-50 pb-[env(safe-area-inset-bottom)]">
       <div className="flex h-16 items-center justify-around">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
-          
+
           return (
             <Link
               key={item.href}
