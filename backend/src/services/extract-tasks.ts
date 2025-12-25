@@ -10,7 +10,7 @@ export async function extractAndScheduleTasks(
 ) {
   try {
     const model = new ChatOpenAI({
-      model: "openai/gpt-oss-120b:free",
+      model: "deepseek/deepseek-r1-0528:free",
       apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
       configuration: {
         baseURL: "https://openrouter.ai/api/v1",
