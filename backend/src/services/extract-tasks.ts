@@ -10,7 +10,7 @@ export async function extractAndScheduleTasks(
 ) {
   try {
     const model = new ChatOpenAI({
-      model: "deepseek/deepseek-r1-0528:free",
+      model: "gpt-5-mini",
       apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
       configuration: {
         baseURL: "https://api.avalai.ir/v1",
