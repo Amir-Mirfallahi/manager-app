@@ -1,7 +1,9 @@
 // components/tasks/task-list.tsx
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, AlertCircle } from "lucide-react";
+import { Clock, Trash } from "lucide-react";
+import { Button } from "../ui/button";
+import { useTaskStore } from "@/store/useTaskStore";
 
 interface Task {
   title: string;
@@ -12,6 +14,7 @@ interface Task {
 }
 
 export function TaskPage({ tasks }: { tasks: Task[] }) {
+  const clearTasks = useTaskStore((state) => state.clearTasks);
   const priorityColors = {
     High: "destructive",
     Medium: "secondary",
@@ -26,7 +29,12 @@ export function TaskPage({ tasks }: { tasks: Task[] }) {
 
   return (
     <div className="container max-w-md p-4 space-y-4 pb-20">
-      <h1 className="text-2xl font-bold mb-6">امروز شما</h1>
+      <div className="flex justify-between">
+        <h1 className="text-2xl font-bold mb-6">امروز شما</h1>
+        <Button variant="outline" color="danger" onClick={clearTasks}>
+          <Trash />
+        </Button>
+      </div>
       {tasks.length === 0 && (
         <p className="text-muted-foreground text-center">
           هنوز تسکی وجود ندارد
