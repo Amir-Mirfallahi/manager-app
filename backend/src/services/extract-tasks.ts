@@ -9,6 +9,7 @@ export async function extractAndScheduleTasks(
   temperature: number = 0
 ) {
   try {
+    const currentTime = new Date().toISOString();
     const model = new ChatOpenAI({
       model: "gpt-5-mini",
       apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
@@ -32,7 +33,8 @@ export async function extractAndScheduleTasks(
       3. If the user doesn't specify a start time, assume the day starts at 09:00 and sequence the tasks chronologically.
       4. Ensure tasks do not overlap.
       5. Return the tasks sorted by their start time.
-      6. All of your response must be in Persian.`,
+      6. All of your response must be in Persian.
+      7. If no time is provided, you can use current time with a proper duration for the task. Current time: ${currentTime}`,
       ],
       ["human", "{input}"],
     ]);
