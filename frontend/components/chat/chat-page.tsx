@@ -47,7 +47,7 @@ export function ChatPage({
           <div
             key={i}
             className={`flex gap-3 mb-4 ${
-              m.role === "user" ? "flex-row-reverse" : ""
+              m.role === "user" ? "flex-row-reverse text-start" : ""
             }`}
           >
             <div
@@ -60,9 +60,10 @@ export function ChatPage({
               {m.role === "ai" ? <Bot size={16} /> : <User size={16} />}
             </div>
             <div
+              dir="rtl"
               className={`p-3 rounded-lg max-w-[80%] text-sm ${
                 m.role === "user"
-                  ? "bg-primary text-primary-foreground"
+                  ? "bg-primary text-primary-foreground text-start"
                   : "bg-muted"
               }`}
             >

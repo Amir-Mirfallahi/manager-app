@@ -3,6 +3,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { TaskListSchema } from "../schema/ai-response";
 import "dotenv/config";
+import { randomUUID } from "crypto";
 
 export async function extractAndScheduleTasks(
   userInput: string,
@@ -42,7 +43,11 @@ export async function extractAndScheduleTasks(
     const structuredLlm = model.withStructuredOutput(TaskListSchema);
     const chain = prompt.pipe(structuredLlm);
     const response = await chain.invoke({ input: userInput });
-    return response.tasks;
+    const tasksWithUuid = response.tasks.map((task) => ({
+      ...task,
+      id: randomUUID(),
+    }));
+    return tasksWithUuid;
   } catch (error) {
     console.error(error);
 

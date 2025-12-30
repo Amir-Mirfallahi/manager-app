@@ -1,31 +1,53 @@
 // components/tasks/task-list.tsx
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, Trash } from "lucide-react";
+"use client";
+import { Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { useTaskStore } from "@/store/useTaskStore";
-
-interface Task {
-  title: string;
-  description: string;
-  priority: "High" | "Medium" | "Low";
-  start_hour: string;
-  end_hour: string;
-}
+import { useShallow } from "zustand/react/shallow";
+import TaskCard from "./task-card";
+import { useState } from "react";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+} from "../ui/drawer";
+import { Task } from "@/types";
+import { Input } from "../ui/input";
+import TaskEditForm from "../forms/task-edit-form";
+import { toast } from "sonner";
 
 export function TaskPage({ tasks }: { tasks: Task[] }) {
-  const clearTasks = useTaskStore((state) => state.clearTasks);
-  const priorityColors = {
-    High: "destructive",
-    Medium: "secondary",
-    Low: "outline",
-  } as const;
+  const { clearTasks, removeTask, editTask } = useTaskStore(
+    useShallow((state) => ({
+      clearTasks: state.clearTasks,
+      removeTask: state.removeTask,
+      editTask: state.editTask,
+    }))
+  );
+  const [showRemoveModal, setShowRemoveModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task>();
 
-  const priorityTexts = {
-    High: "زیاد",
-    Medium: "متوسط",
-    Low: "کم",
-  } as const;
+  const onRemove = (task: Task) => {
+    setSelectedTask(task);
+    setShowRemoveModal(true);
+  };
+
+  const onEdit = (task: Task) => {
+    setSelectedTask(task);
+    setShowEditModal(true);
+  };
+
+  const handleEditTask = (newTask: Omit<Task, "id">) => {
+    console.error(newTask);
+    console.error(selectedTask);
+
+    selectedTask?.id
+      ? editTask(selectedTask?.id, newTask)
+      : toast.error("مشکلی در ویرایش تسک به وجود آمد.");
+  };
 
   return (
     <div className="container max-w-md p-4 space-y-4 pb-20">
@@ -42,37 +64,61 @@ export function TaskPage({ tasks }: { tasks: Task[] }) {
       )}
 
       {tasks.map((task, idx) => (
-        <Card
+        <TaskCard
+          task={task}
           key={idx}
-          className="overflow-hidden border-l-4"
-          style={{
-            borderLeftColor:
-              task.priority === "High"
-                ? "red"
-                : task.priority === "Medium"
-                ? "orange"
-                : "gray",
-          }}
-        >
-          <CardHeader className="p-4 pb-2 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-lg font-semibold">
-              {task.title}
-            </CardTitle>
-            <Badge variant={priorityColors[task.priority]}>
-              {priorityTexts[task.priority]}
-            </Badge>
-          </CardHeader>
-          <CardContent className="p-4 pt-0 space-y-2">
-            <p className="text-sm text-muted-foreground">{task.description}</p>
-            <div className="flex items-center gap-2 text-xs font-medium text-primary">
-              <Clock className="h-3 w-3" />
-              <span>
-                {task.start_hour} - {task.end_hour}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+          handleRemove={() => onRemove(task)}
+          handleEdit={() => onEdit(task)}
+        />
       ))}
+      {/* Drawer for removing */}
+      <Drawer open={showRemoveModal} onOpenChange={setShowRemoveModal}>
+        <DrawerContent>
+          <div className="flex flex-col gap-3 py-4 w-3xs mx-auto text-center">
+            <DrawerTitle>حذف تسک</DrawerTitle>
+            <DrawerClose asChild>
+              <Button variant="destructive" size="lg" className="max-w-3xs">
+                کنسل
+              </Button>
+            </DrawerClose>
+            <Button
+              onClick={() =>
+                selectedTask?.id
+                  ? removeTask(selectedTask.id)
+                  : setShowRemoveModal(false)
+              }
+              variant="secondary"
+              size="lg"
+              className="max-w-3xs"
+            >
+              حذف
+            </Button>
+          </div>
+        </DrawerContent>
+      </Drawer>
+      {/* Drawer for Editing */}
+      <Drawer open={showEditModal} onOpenChange={setShowEditModal}>
+        <DrawerContent className="px-12 py-4">
+          <DrawerTitle>ویرایش تسک {selectedTask?.title}</DrawerTitle>
+          <TaskEditForm
+            onSubmit={handleEditTask}
+            oldValues={
+              selectedTask && {
+                title: selectedTask.title,
+                description: selectedTask.description,
+                start_hour: selectedTask.start_hour,
+                end_hour: selectedTask.end_hour,
+                priority: selectedTask.priority,
+              }
+            }
+          />
+          <DrawerClose asChild>
+            <Button variant="destructive" className="mt-4">
+              کنسل
+            </Button>
+          </DrawerClose>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

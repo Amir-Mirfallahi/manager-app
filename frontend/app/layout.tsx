@@ -5,6 +5,7 @@ import { DisableZoom } from "@/components/disable-zoom";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { Toaster } from "@/components/ui/sonner";
 import { MobileInitializer } from "@/components/mobile-initializer";
+import * as z from "zod";
 
 export const metadata: Metadata = {
   title: "Taskflow AI | تسک فلو",
@@ -12,13 +13,14 @@ export const metadata: Metadata = {
   creator: "Amir Mirfallahi",
   keywords: ["task", "ai", "schedule"],
 };
+z.config(z.locales.fa());
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
       <body className="antialiased font-vazirmatn pb-12 ">
         <head>
           <meta
